@@ -2,10 +2,123 @@ from tkinter import *
 from tkinter import Canvas
 from tkinter import ttk
 
+def calcular_reisitencia_frame_cor ():
+      valores = {
+        "Preto": 0,
+        "Marrom": 1,
+        "Vermelho": 2,
+        "Laranja": 3,
+        "Amarelo": 4,
+        "Verde": 5,
+        "Azul": 6,
+        "Violeta": 7,
+        "Cinza": 8,
+        "Branco": 9
+      }
+
+      multiplicadores_valores = {
+        "Preto": 1,
+        "Marrom": 10,
+        "Vermelho": 100,
+        "Laranja": 1000,
+        "Amarelo": 10000,
+        "Verde": 100000,
+        "Azul": 1000000,
+        "Violeta": 10000000,
+        "Cinza": 100000000,
+        "Branco": 1000000000,
+        "Dourado": 0.1,
+        "Prata": 0.01
+      }
+
+      tolerancias_valores = {
+        "Marrom": 1,
+        "Vermelho": 2,
+        "Verde": 0.5,
+        "Azul": 0.25,
+        "Violeta": 0.1,
+        "Cinza": 0.05,
+        "Dourado": 5,
+        "Prata": 10,
+        "Sem cor": 20
+      }
+
+      valor1 = valores[banda_1.get()]
+      valor2 = valores[banda_2.get()]
+      fator = multiplicadores_valores[multiplicador.get()]
+      tolerancia_resultado_cores = tolerancias_valores[tolerancia_cores.get()]
+      
+      valor = float(valor1 * 10 + valor2) * fator
+
+      if valor >= 1_000_000_000:
+            valor_exibicao = valor / 1_000_000_000
+            unidade = "GΩ"
+      elif valor >= 1000000:
+            valor_exibicao = valor / 1000000
+            unidade = "MΩ"
+      elif valor >= 1000:
+            valor_exibicao = valor / 1000
+            unidade = "kΩ"
+      else:
+            valor_exibicao = valor
+            unidade = "Ω"
+
+      resultado_resistencia.config(text=f"Resistência: {valor_exibicao:.2f} {unidade} ±{tolerancia_resultado_cores}%"
+)
+
+def cores():
+    base_resistor_cores()
+    montar_cores_resistor()
+    calcular_reisitencia_frame_cor()
+
+def receber_cores(nome):
+      cores = {
+            "Preto": "#000000",
+            "Marrom": "#8B4513",
+            "Vermelho": "#FF0000",
+            "Laranja": "#FFA500",
+            "Amarelo": "#FFFF00",
+            "Verde": "#008000",
+            "Azul": "#0000FF",
+            "Violeta": "#800080",
+            "Cinza": "#808080",
+            "Branco": "#FFFFFF",
+            "Dourado": "#FFD700",
+            "Prata": "#C0C0C0"
+      }
+      return cores.get(nome)
+
+def montar_cores_resistor():
+      cor1 = receber_cores(banda_1.get())
+      cor2 = receber_cores(banda_2.get())
+      cor3 = receber_cores(multiplicador.get())
+      cor4 = receber_cores(tolerancia_cores.get())
+
+      if banda_1.get() != "" and banda_2.get() != "" and multiplicador.get() != "" and tolerancia_cores.get() != "":
+          caixa_resultado_2.create_rectangle(85, 50, 125, 100, fill=cor1)
+          caixa_resultado_2.create_rectangle(150, 50, 190, 100, fill=cor2)
+          caixa_resultado_2.create_rectangle(215, 50, 255, 100, fill=cor3)
+          caixa_resultado_2.create_rectangle(280, 50, 320, 100, fill=cor4)
+
+def base_resistor_cores():
+    if banda_1.get() != "" and banda_2.get() != "" and multiplicador.get() != "" and tolerancia_cores != "":
+       caixa_resultado_2.create_rectangle(75, 50, 375, 100, fill="#D2B48C",
+                                                 outline="#6B3E26", width=2)
+       caixa_resultado_2.create_rectangle(1, 72, 75, 78, fill="#555555")
+       caixa_resultado_2.create_rectangle(375, 72, 450 , 78, fill="#555555")
+
+       caixa_resultado_2.delete("texto")
+    if tolerancia_cores.get() == "Sem cor":
+         caixa_resultado_2.create_text(225, 25, text="Resistor de 3 Faixas", font=("Arial", 15 , "bold"), fill="black", anchor="center", tags="texto")
+    else:
+         caixa_resultado_2.create_text(225, 25, text="Resistor de 4 Faixas", font=("Arial", 15 , "bold"), fill="black", anchor="center", tags="texto")
+
 def base_resisitor_valor():
     if valor_da_resistencia.get() != "" and tolerancia_valor.get() != "":
         caixa_resultado.create_rectangle(75, 50, 375, 100, fill="#D2B48C",
                                          outline="#6B3E26", width=2)
+        caixa_resultado.create_rectangle(1, 72, 75, 78, fill="#555555")
+        caixa_resultado.create_rectangle(375, 72, 450 , 78, fill="#555555")
         
         caixa_resultado.delete("texto")
     if tolerancia_valor.get() == "Sem cor":
@@ -60,12 +173,12 @@ radiobutton_cores.place(x=165, y=90)
 
 # Fundo branco valor da resistencia
 frame_valor = Frame(canvas, bg="white", 
-                    width=500, height=410)
+                    width=500, height=400)
 frame_valor.place(x=5, y=65)
 
 # Fundo branco cores da resistencia
 frame_cores = Frame(canvas, bg="white", 
-                    width=500, height=410)
+                    width=500, height=400)
 frame_cores.place(x=5, y=65)
 
 # Itens valor da resistencia
@@ -168,7 +281,7 @@ borda_botao_calcular.place(x=5, y=60)
 
 botao_calcular_resistencia = Button(borda_botao_calcular, text="Calcular resistência",
                                     font=("Arial", 8, "bold"), bg="#3F9C8F",
-                                    fg="white", bd=0)
+                                    fg="white", bd=0, command=cores)
 botao_calcular_resistencia.pack()
 
 resultado_resistencia = Label(frame_cores, text="Digite o valor da resistência ou selecone as cores",
