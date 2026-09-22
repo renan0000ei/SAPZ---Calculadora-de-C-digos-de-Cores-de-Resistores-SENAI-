@@ -2,6 +2,63 @@ from tkinter import *
 from tkinter import Canvas
 from tkinter import ttk
 
+def calcular_resistencia_frame_valor():
+      cores = {
+      0: "Preto",
+      1: "Marrom",
+      2: "Vermelho",
+      3: "Laranja",
+      4: "Amarelo",
+      5: "Verde",
+      6: "Azul",
+      7: "Violeta",
+      8: "Cinza",
+      9: "Branco"
+      }
+
+      multiplicadores = {
+      0: "Preto",
+      1: "Marrom",
+      2: "Vermelho",
+      3: "Laranja",
+      4: "Amarelo",
+      5: "Verde",
+      6: "Azul",
+      7: "Violeta",
+      8: "Cinza",
+      9: "Branco",
+      -1: "Dourado",
+      -2: "Prata"
+      }
+
+      valor = float(valor_da_resistencia.get())
+
+      expoente = 0
+
+      while valor >= 100:
+        valor = valor / 10
+        expoente = expoente + 1
+
+      while valor < 10:
+        valor = valor * 10
+        expoente = expoente - 1
+
+      if valor % 1 != 0:
+        mensagem_valor.config(text="Valor não pode ser representado com 4 faixas")
+
+      digito1 = int(valor // 10)
+      digito2 = int(valor % 10)
+
+      global cor_1
+      global cor_2
+      global cor_3
+      global cor_4
+
+      cor_1 = cores[digito1]
+      cor_2 = cores[digito2]
+      cor_3 = multiplicadores[expoente]
+      cor_4 = tolerancia_valor.get()
+       
 def calcular_reisitencia_frame_cor ():
       valores = {
         "Preto": 0,
@@ -66,6 +123,11 @@ def calcular_reisitencia_frame_cor ():
       resultado_resistencia.config(text=f"Resistência: {valor_exibicao:.2f} {unidade} ±{tolerancia_resultado_cores}%"
 )
 
+def valor():
+    calcular_resistencia_frame_valor()
+    base_resisitor_valor()
+    montar_cores_resistor_valor()
+
 def cores():
     base_resistor_cores()
     montar_cores_resistor()
@@ -88,30 +150,50 @@ def receber_cores(nome):
       }
       return cores.get(nome)
 
+def montar_cores_resistor_valor():
+    if valor_da_resistencia.get() != "" and tolerancia_valor.get() != "":
+        denovo_cor1 = receber_cores(cor_1)
+        denovo_cor2 = receber_cores(cor_2)
+        denovo_cor3 = receber_cores(cor_3)
+
+        caixa_resultado.create_rectangle(85, 50, 125, 100, fill=denovo_cor1)
+        caixa_resultado.create_rectangle(150, 50, 190, 100, fill=denovo_cor2)
+        caixa_resultado.create_rectangle(215, 50, 255, 100, fill=denovo_cor3)
+
+        if tolerancia_valor.get() != "Sem cor":
+            denovo_cor4 = receber_cores(cor_4)
+            caixa_resultado.create_rectangle(280, 50, 320, 100, fill=denovo_cor4)
+
+
 def montar_cores_resistor():
       cor1 = receber_cores(banda_1.get())
       cor2 = receber_cores(banda_2.get())
       cor3 = receber_cores(multiplicador.get())
       cor4 = receber_cores(tolerancia_cores.get())
 
-      if banda_1.get() != "" and banda_2.get() != "" and multiplicador.get() != "" and tolerancia_cores.get() != "":
+      if banda_1.get() != "" and banda_2.get() != "" and multiplicador.get() != "":
           caixa_resultado_2.create_rectangle(85, 50, 125, 100, fill=cor1)
           caixa_resultado_2.create_rectangle(150, 50, 190, 100, fill=cor2)
           caixa_resultado_2.create_rectangle(215, 50, 255, 100, fill=cor3)
+      if tolerancia_cores.get() != "Sem cor":
           caixa_resultado_2.create_rectangle(280, 50, 320, 100, fill=cor4)
 
 def base_resistor_cores():
     if banda_1.get() != "" and banda_2.get() != "" and multiplicador.get() != "" and tolerancia_cores != "":
        caixa_resultado_2.create_rectangle(75, 50, 375, 100, fill="#D2B48C",
-                                                 outline="#6B3E26", width=2)
+                                           outline="#6B3E26", width=2)
        caixa_resultado_2.create_rectangle(1, 72, 75, 78, fill="#555555")
        caixa_resultado_2.create_rectangle(375, 72, 450 , 78, fill="#555555")
 
        caixa_resultado_2.delete("texto")
     if tolerancia_cores.get() == "Sem cor":
-         caixa_resultado_2.create_text(225, 25, text="Resistor de 3 Faixas", font=("Arial", 15 , "bold"), fill="black", anchor="center", tags="texto")
+         caixa_resultado_2.create_text(225, 25, text="Resistor de 3 Faixas",
+                                        font=("Arial", 15 , "bold"), fill="black",
+                                        anchor="center", tags="texto")
     else:
-         caixa_resultado_2.create_text(225, 25, text="Resistor de 4 Faixas", font=("Arial", 15 , "bold"), fill="black", anchor="center", tags="texto")
+         caixa_resultado_2.create_text(225, 25, text="Resistor de 4 Faixas",
+                                        font=("Arial", 15 , "bold"), fill="black",
+                                        anchor="center", tags="texto")
 
 def base_resisitor_valor():
     if valor_da_resistencia.get() != "" and tolerancia_valor.get() != "":
@@ -122,9 +204,13 @@ def base_resisitor_valor():
         
         caixa_resultado.delete("texto")
     if tolerancia_valor.get() == "Sem cor":
-        caixa_resultado.create_text(225, 25, text="Resistor de 3 Faixas", font=("Arial", 15 , "bold"), fill="black", anchor="center", tags="texto")
+        caixa_resultado.create_text(225, 25, text="Resistor de 3 Faixas",
+                                       font=("Arial", 15 , "bold"), fill="black",
+                                       anchor="center", tags="texto")
     else:
-        caixa_resultado.create_text(225, 25, text="Resistor de 4 Faixas", font=("Arial", 15 , "bold"), fill="black", anchor="center", tags="texto")
+        caixa_resultado.create_text(225, 25, text="Resistor de 4 Faixas",
+                                       font=("Arial", 15 , "bold"), fill="black",
+                                       anchor="center", tags="texto")
 
 # função alternar
 def alternar_radiobutton():
@@ -210,12 +296,12 @@ borda_botao_calcular.place(x=5, y=60)
 
 botao_calcular_cores = Button(borda_botao_calcular, text="Calcular cores",
                               font=("Arial", 8, "bold"), bg="#3F9C8F",
-                              fg="white", bd=0, command=base_resisitor_valor)
+                              fg="white", bd=0, command=valor)
 botao_calcular_cores.pack()
 
-Label(frame_valor, text="Digite o valor da resistência ou selecone as cores",
-      font=("Arial", 8, "bold")
-      ).place(x=5, y=90)
+mensagem_valor = Label(frame_valor, text="Digite o valor da resistência ou selecone as cores",
+                        font=("Arial", 8, "bold"))
+mensagem_valor.place(x=5, y=90)
 
 # Caixa do resistor valor
 borda_caixa_resultado = Frame(frame_valor, padx=3,
