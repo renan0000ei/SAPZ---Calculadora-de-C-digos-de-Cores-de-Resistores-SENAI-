@@ -1,7 +1,9 @@
+#importando os itens do tkinter
 from tkinter import *
 from tkinter import Canvas
 from tkinter import ttk
 
+#Função que calula a resistencia escolhida pelo usuario e define as cores do resistor
 def calcular_resistencia_frame_valor():
       cores = {
       0: "Preto",
@@ -58,7 +60,8 @@ def calcular_resistencia_frame_valor():
       cor_2 = cores[digito2]
       cor_3 = multiplicadores[expoente]
       cor_4 = tolerancia_valor.get()
-       
+
+#Função que calcula as cores escolhidas pelo usuario e define a resistencia do resistor       
 def calcular_reisitencia_frame_cor ():
       valores = {
         "Preto": 0,
@@ -107,8 +110,8 @@ def calcular_reisitencia_frame_cor ():
       
       valor = float(valor1 * 10 + valor2) * fator
 
-      if valor >= 1_000_000_000:
-            valor_exibicao = valor / 1_000_000_000
+      if valor >= 1000000000:
+            valor_exibicao = valor / 1000000000
             unidade = "GΩ"
       elif valor >= 1000000:
             valor_exibicao = valor / 1000000
@@ -123,16 +126,19 @@ def calcular_reisitencia_frame_cor ():
       resultado_resistencia.config(text=f"Resistência: {valor_exibicao:.2f} {unidade} ±{tolerancia_resultado_cores}%"
 )
 
+#Função que junta as funções do frame de valor da resistencia para ser usada no botao calcular cores
 def valor():
     calcular_resistencia_frame_valor()
     base_resisitor_valor()
     montar_cores_resistor_valor()
 
+#Função que junta as funções do frame de cores da resistencia para ser usada no botao calcular resistencia
 def cores():
     base_resistor_cores()
     montar_cores_resistor()
     calcular_reisitencia_frame_cor()
 
+#Função que recebe o nome da cor e retorna o "#" da cor para ser usada no resistor
 def receber_cores(nome):
       cores = {
             "Preto": "#000000",
@@ -150,6 +156,7 @@ def receber_cores(nome):
       }
       return cores.get(nome)
 
+#Função que monta as cores na base do resistor no frame valor
 def montar_cores_resistor_valor():
     if valor_da_resistencia.get() != "" and tolerancia_valor.get() != "":
         denovo_cor1 = receber_cores(cor_1)
@@ -164,7 +171,7 @@ def montar_cores_resistor_valor():
             denovo_cor4 = receber_cores(cor_4)
             caixa_resultado.create_rectangle(280, 50, 320, 100, fill=denovo_cor4)
 
-
+#Função que monta as cores na base do resistor no frame cores
 def montar_cores_resistor():
       cor1 = receber_cores(banda_1.get())
       cor2 = receber_cores(banda_2.get())
@@ -178,6 +185,8 @@ def montar_cores_resistor():
       if tolerancia_cores.get() != "Sem cor":
           caixa_resultado_2.create_rectangle(280, 50, 320, 100, fill=cor4)
 
+
+#Função que cria a base do resistor no frame cores
 def base_resistor_cores():
     if banda_1.get() != "" and banda_2.get() != "" and multiplicador.get() != "" and tolerancia_cores != "":
        caixa_resultado_2.create_rectangle(75, 50, 375, 100, fill="#D2B48C",
@@ -195,6 +204,7 @@ def base_resistor_cores():
                                         font=("Arial", 15 , "bold"), fill="black",
                                         anchor="center", tags="texto")
 
+#Função que cria a base do resistor no frame valor
 def base_resisitor_valor():
     if valor_da_resistencia.get() != "" and tolerancia_valor.get() != "":
         caixa_resultado.create_rectangle(75, 50, 375, 100, fill="#D2B48C",
@@ -212,7 +222,7 @@ def base_resisitor_valor():
                                        font=("Arial", 15 , "bold"), fill="black",
                                        anchor="center", tags="texto")
 
-# função alternar
+# função alternar frame
 def alternar_radiobutton():
     if opcao.get() == 1:
         frame_valor.lift()
@@ -257,12 +267,12 @@ radiobutton_cores = Radiobutton(text="Cores do resistor",
                                 bg="#D3D3D3")
 radiobutton_cores.place(x=165, y=90)
 
-# Fundo branco valor da resistencia
+# Fundo branco(frame) valor da resistencia
 frame_valor = Frame(canvas, bg="white", 
                     width=500, height=400)
 frame_valor.place(x=5, y=65)
 
-# Fundo branco cores da resistencia
+# Fundo branco(frame) cores da resistencia
 frame_cores = Frame(canvas, bg="white", 
                     width=500, height=400)
 frame_cores.place(x=5, y=65)
